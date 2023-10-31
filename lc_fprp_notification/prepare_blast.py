@@ -13,6 +13,11 @@ spark.read.parquet(
     os.path.join(cdp_base_dir, "audience", "lc_fprp_notification.parquet")
 ).createOrReplaceTempView("customer_list")
 
+cdp_base_dir = "/Volumes/lc_prd/ml_cdxp_p13n_silver/"
+spark.read.parquet(
+    os.path.join(cdp_base_dir, "audience", "lc_fprp_notification_cn.parquet")
+).createOrReplaceTempView("customer_list_cn")
+
 # COMMAND ----------
 
 # MAGIC %py
@@ -22,6 +27,12 @@ spark.read.parquet(
 # MAGIC spark.table(
 # MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_hk_version_female_final_output"
 # MAGIC ).createOrReplaceTempView("Recommendations_female")
+# MAGIC spark.table(
+# MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_cn_version_male_final_output"
+# MAGIC ).createOrReplaceTempView("Recommendations_male_cn")
+# MAGIC spark.table(
+# MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_cn_version_female_final_output"
+# MAGIC ).createOrReplaceTempView("Recommendations_female_cn")
 
 # COMMAND ----------
 
@@ -37,6 +48,25 @@ spark.read.parquet(
 # MAGIC   *
 # MAGIC from
 # MAGIC   Recommendations_male
+# MAGIC union all
+# MAGIC select
+# MAGIC   *
+# MAGIC from
+# MAGIC   Recommendations_male_cn
+# MAGIC   union all
+# MAGIC select
+# MAGIC   *
+# MAGIC from
+# MAGIC   Recommendations_female_cn
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE
+# MAGIC OR REPLACE TEMPORARY VIEW customer_list_all AS
+# MAGIC select * from customer_list
+# MAGIC union 
+# MAGIC select * from customer_list_cn
 
 # COMMAND ----------
 
@@ -119,10 +149,10 @@ spark.read.parquet(
 # MAGIC   m.customer_name_shortened_chi,
 # MAGIC   pref_lang AS Language,
 # MAGIC   cust_type,
-# MAGIC   'birthday' as campaign_id 
+# MAGIC   'fprp_notification' as campaign_id 
 # MAGIC FROM
 # MAGIC   recommendations_non_beauty r
-# MAGIC   INNER JOIN customer_list m USING (vip_no)
+# MAGIC   INNER JOIN customer_list_all m USING (vip_no)
 
 # COMMAND ----------
 
@@ -132,8 +162,8 @@ blast_list_nb = spark.table("BlastList_NON_BEAUTY").toPandas()
 
 def get_utm_source(group):
     if group.startswith("Female"):
-        return "HK_female_DB"
-    return "HK_Male_DB"
+        return "female_DB"
+    return "Male_DB"
 
 # COMMAND ----------
 
