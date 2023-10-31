@@ -90,6 +90,10 @@ product_sortings = {
     "hk": {
         "female": [["WW", "LSA", "WW", "LSA"], ["HL", "COS", "HL", "COS"]],
         "male": [["MW", "MSA", "MW", "MSA"], ["HL", "MW", "HL", "MW"]],
+    },
+    "cn": {
+        "female": [["WW", "LSA", "WW", "LSA"], ["HL", "COS", "HL", "COS"]],
+        "male": [["MW", "MSA", "MW", "MSA"], ["HL", "MW", "HL", "MW"]],
     }
 }
 

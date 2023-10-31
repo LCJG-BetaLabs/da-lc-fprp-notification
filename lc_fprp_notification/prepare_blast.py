@@ -3,36 +3,25 @@ dbutils.widgets.removeAll()
 dbutils.widgets.text("blast_date", "")
 
 blast_date = getArgument("blast_date")
+regions = ["hk", "cn"]
 
 # COMMAND ----------
 
 import os
 
 cdp_base_dir = "/Volumes/lc_prd/ml_cdxp_p13n_silver/"
-spark.read.parquet(
-    os.path.join(cdp_base_dir, "audience", "lc_fprp_notification.parquet")
-).createOrReplaceTempView("customer_list")
 
-cdp_base_dir = "/Volumes/lc_prd/ml_cdxp_p13n_silver/"
-spark.read.parquet(
-    os.path.join(cdp_base_dir, "audience", "lc_fprp_notification_cn.parquet")
-).createOrReplaceTempView("customer_list_cn")
+for region in regions:
+    spark.read.parquet(
+        os.path.join(cdp_base_dir, "audience", f"lc_fprp_notification_{region}.parquet")
+    ).createOrReplaceTempView(f"customer_list_{region}")
 
-# COMMAND ----------
-
-# MAGIC %py
-# MAGIC spark.table(
-# MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_hk_version_male_final_output"
-# MAGIC ).createOrReplaceTempView("Recommendations_male")
-# MAGIC spark.table(
-# MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_hk_version_female_final_output"
-# MAGIC ).createOrReplaceTempView("Recommendations_female")
-# MAGIC spark.table(
-# MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_cn_version_male_final_output"
-# MAGIC ).createOrReplaceTempView("Recommendations_male_cn")
-# MAGIC spark.table(
-# MAGIC     f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_cn_version_female_final_output"
-# MAGIC ).createOrReplaceTempView("Recommendations_female_cn")
+    spark.table(
+        f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_{region}_version_male_final_output"
+    ).createOrReplaceTempView(f"Recommendations_male_{region}")
+    spark.table(
+        f"lc_prd.ml_cdxp_p13n_silver.campaign_lc_fprp_notification_{blast_date}_{region}_version_female_final_output"
+    ).createOrReplaceTempView(f"Recommendations_female_{region}")
 
 # COMMAND ----------
 
@@ -42,12 +31,12 @@ spark.read.parquet(
 # MAGIC select
 # MAGIC   *
 # MAGIC from
-# MAGIC   Recommendations_female
+# MAGIC   Recommendations_female_hk
 # MAGIC union all
 # MAGIC select
 # MAGIC   *
 # MAGIC from
-# MAGIC   Recommendations_male
+# MAGIC   Recommendations_male_hk
 # MAGIC union all
 # MAGIC select
 # MAGIC   *
@@ -64,7 +53,7 @@ spark.read.parquet(
 # MAGIC %sql
 # MAGIC CREATE
 # MAGIC OR REPLACE TEMPORARY VIEW customer_list_all AS
-# MAGIC select * from customer_list
+# MAGIC select * from customer_list_hk
 # MAGIC union 
 # MAGIC select * from customer_list_cn
 
@@ -526,4 +515,4 @@ product_recommendation.to_csv(
 
 # COMMAND ----------
 
-spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")
+# spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")

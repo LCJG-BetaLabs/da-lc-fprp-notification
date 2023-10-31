@@ -61,7 +61,11 @@ nationalities = {
     "hk": {
         "female": ["HKC", "HKL"],
         "male": ["HKC", "HKL"],
-    }
+    },
+    "cn": {
+        "female": ["ML"],
+        "male": ["ML"],
+    },
 }
 
 group = audience_id.split("_")[-1]
