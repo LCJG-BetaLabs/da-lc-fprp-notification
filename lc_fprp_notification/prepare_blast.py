@@ -515,4 +515,4 @@ product_recommendation.to_csv(
 
 # COMMAND ----------
 
-# spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")
+spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")
