@@ -1,4 +1,9 @@
 # Databricks notebook source
+dbutils.widgets.removeAll()
+dbutils.widgets.dropdown("test", "false", ["true", "false"])
+
+# COMMAND ----------
+
 # Get audience_id & campaign_id from customization_id
 def get_customization(customization_id):
     rows = spark.sql(
@@ -40,5 +45,8 @@ for region in regions:
 dbutils.notebook.run(
     "./prepare_blast",
     0,
-    {"blast_date": blast_date},
+    {
+        "blast_date": blast_date,
+        "test": getArgument("test"),
+    },
 )

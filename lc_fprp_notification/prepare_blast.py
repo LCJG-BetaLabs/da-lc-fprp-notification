@@ -8,6 +8,7 @@ dbutils.widgets.text("blast_date", "")
 dbutils.widgets.dropdown("test", "false", ["true", "false"])
 
 blast_date = getArgument("blast_date")
+test = getArgument("test") == "true"
 regions = ["hk", "cn"]
 
 # COMMAND ----------
@@ -566,5 +567,5 @@ send_email(["arnabmaulik@lcjgroup.com", "cintiaching@lcjgroup.com"], email_subje
 
 # COMMAND ----------
 
-if test == "false":
+if test:
     spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")
