@@ -59,32 +59,42 @@ print(campaign_dir)
 
 if region == "hk":
     spark.sql(
-    """Create
+        """
+        Create
         or replace temporary view audience as
         select
-        distinct a.*,
-        egc_no
+            distinct a.*
         from
-        audience0 a
-        inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_issue_by_quarter b on a.vip_no = b.vip_no
+            audience0 a
+            inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_summary b on a.vip_no = b.vip_no
         where
-        TO_DATE(issue_date, 'yyyyMMdd') >= '2023-06-01'
-        and a.cust_type in ('Hong Kong', 'Overseas')
-    """)
+            TO_DATE(collect_start_date, 'yyyyMMdd') >= (
+                select
+                    max(TO_DATE(collect_start_date, 'yyyyMMdd'))
+                from
+                    lc_prd.crm_db_neo_silver.dbo_v_fprp_summary
+        )
+            and b.region in ('HKG')
+        """
+    )
 elif region == "cn":
     spark.sql(
         """
         Create
         or replace temporary view audience as
         select
-        distinct a.*,
-        egc_no
+            distinct a.*
         from
-        audience0 a
-        inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_issue_by_quarter b on a.vip_no = b.vip_no
+            audience0 a
+            inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_summary b on a.vip_no = b.vip_no
         where
-        TO_DATE(issue_date, 'yyyyMMdd') >= '2023-06-01'
-        and a.cust_type in ('China')
+            TO_DATE(collect_start_date, 'yyyyMMdd') >= (
+                select
+                    max(TO_DATE(collect_start_date, 'yyyyMMdd'))
+                from
+                    lc_prd.crm_db_neo_silver.dbo_v_fprp_summary
+        )
+            and b.region in ('BJG','SHG','CHD')
         """
     )
 

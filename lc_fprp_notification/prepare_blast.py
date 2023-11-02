@@ -1,8 +1,14 @@
 # Databricks notebook source
+# MAGIC %run "/utils/sendgrid_utils"
+
+# COMMAND ----------
+
 dbutils.widgets.removeAll()
 dbutils.widgets.text("blast_date", "")
+dbutils.widgets.dropdown("test", "false", ["true", "false"])
 
 blast_date = getArgument("blast_date")
+test = getArgument("test") == "true"
 regions = ["hk", "cn"]
 
 # COMMAND ----------
@@ -515,4 +521,51 @@ product_recommendation.to_csv(
 
 # COMMAND ----------
 
-spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")
+# MAGIC %sql
+# MAGIC CREATE OR REPLACE TEMPORARY VIEW sendgrid_df AS
+# MAGIC WITH eligible_audience AS (
+# MAGIC   SELECT 
+# MAGIC     "Eligible List" AS source,
+# MAGIC     COUNT(DISTINCT vip_no) AS vips,
+# MAGIC     " "
+# MAGIC   FROM customer_list_all
+# MAGIC ),
+# MAGIC rec AS (
+# MAGIC   SELECT
+# MAGIC     "Recommendation List" AS source,
+# MAGIC     COUNT(DISTINCT vip_no) AS vips,
+# MAGIC     " "
+# MAGIC   FROM recommendations_non_beauty
+# MAGIC ),
+# MAGIC blast_count AS (
+# MAGIC   SELECT
+# MAGIC     "Blast" AS source,
+# MAGIC     COUNT(DISTINCT customer_id) AS vips,
+# MAGIC     blast_date
+# MAGIC   FROM campaign_personalization
+# MAGIC   GROUP BY blast_date
+# MAGIC )
+# MAGIC SELECT * FROM eligible_audience
+# MAGIC UNION
+# MAGIC SELECT * FROM rec
+# MAGIC UNION ALL
+# MAGIC SELECT "", "", ""
+# MAGIC UNION ALL
+# MAGIC SELECT " ", "blast_size", "blast_date"
+# MAGIC UNION
+# MAGIC SELECT * FROM blast_count
+
+# COMMAND ----------
+
+from datetime import date
+import pandas as pd
+
+today = date.today()
+email_body = spark.table("sendgrid_df").toPandas().to_html()
+email_subject = f"LC FPRP Notification monitor report ({today})"
+send_email(["arnabmaulik@lcjgroup.com", "cintiaching@lcjgroup.com"], email_subject, email_body)
+
+# COMMAND ----------
+
+if test:
+    spark.table("All_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_overall"), mode="append")

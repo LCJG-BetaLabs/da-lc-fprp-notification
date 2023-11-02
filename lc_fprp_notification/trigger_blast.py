@@ -1,4 +1,13 @@
 # Databricks notebook source
+# MAGIC %run "./fill_missing_audience"
+
+# COMMAND ----------
+
+dbutils.widgets.removeAll()
+dbutils.widgets.dropdown("test", "false", ["true", "false"])
+
+# COMMAND ----------
+
 # Get audience_id & campaign_id from customization_id
 def get_customization(customization_id):
     rows = spark.sql(
@@ -23,22 +32,16 @@ for region in regions:
     campaign_id, audience_ids = get_customization(f"lc_fprp_notification_{region}")
     blast_date = campaign_id.split("_")[-2]
     for group in groups:
-        # fill in missing audience
-        dbutils.notebook.run(
-            "./fill_missing_audience", 
-            0,
-            {
-                "campaign_id": campaign_id,
-                "group": group,
-                "region": region,
-            }
-        )
-
+        print(f"group = {group}, region = {region}")
+        fill_missing_audience(campaign_id, group, region)
 
 # COMMAND ----------
 
 dbutils.notebook.run(
     "./prepare_blast",
     0,
-    {"blast_date": blast_date},
+    {
+        "blast_date": blast_date,
+        "test": getArgument("test"),
+    },
 )
