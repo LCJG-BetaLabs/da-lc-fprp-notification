@@ -489,9 +489,7 @@ emarsys_list_1 = blast_list_nb.copy().reset_index(drop=True)
 
 # COMMAND ----------
 
-import datetime
 
-blast_date_dash = datetime.datetime.strptime(blast_date, "%Y%m%d").strftime("%Y-%m-%d")
 
 # COMMAND ----------
 
@@ -502,19 +500,19 @@ base_dir = "/dbfs/mnt/prd/fprp_notification/lc/blast"
 os.makedirs(base_dir, exist_ok=True)
 campaign_personalization = spark.table("campaign_personalization").toPandas()
 campaign_personalization.to_csv(
-    os.path.join(base_dir, "campaign_personalization_fprp_notification_%s.upsert.csv" % (blast_date_dash)),
+    os.path.join(base_dir, "campaign_personalization_fprp_notification_%s.upsert.csv" % (blast_date)),
     index=False,
     encoding="utf-8",
 )
 products = spark.table("products").toPandas()
 products.to_csv(
-    os.path.join(base_dir, "products_fprp_notification_%s.upsert.csv" % (blast_date_dash)),
+    os.path.join(base_dir, "products_fprp_notification_%s.upsert.csv" % (blast_date)),
     index=False,
     encoding="utf-8",
 )
 product_recommendation = spark.table("product_recommendation").toPandas()
 product_recommendation.to_csv(
-    os.path.join(base_dir, "product_recommendation_fprp_notification_%s.upsert.csv" % (blast_date_dash)),
+    os.path.join(base_dir, "product_recommendation_fprp_notification_%s.upsert.csv" % (blast_date)),
     index=False,
     encoding="utf-8",
 )
