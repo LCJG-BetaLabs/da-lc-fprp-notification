@@ -59,180 +59,113 @@ for region in regions:
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC CREATE
-# MAGIC OR REPLACE TEMPORARY VIEW BlastList_NON_BEAUTY_hk AS
-# MAGIC SELECT
-# MAGIC   r.vip_no,
-# MAGIC   atg_code_1,
-# MAGIC   atg_code_2,
-# MAGIC   atg_code_3,
-# MAGIC   atg_code_4,
-# MAGIC   atg_code_5,
-# MAGIC   atg_code_6,
-# MAGIC    atg_code_7,
-# MAGIC   atg_code_8,
-# MAGIC   brand_desc_1,
-# MAGIC   brand_desc_2,
-# MAGIC   brand_desc_3,
-# MAGIC   brand_desc_4,
-# MAGIC   brand_desc_5,
-# MAGIC   brand_desc_6,
-# MAGIC   brand_desc_7,
-# MAGIC   brand_desc_8,
-# MAGIC   prod_desc_1,
-# MAGIC   prod_desc_2,
-# MAGIC   prod_desc_3,
-# MAGIC   prod_desc_4,
-# MAGIC   prod_desc_5,
-# MAGIC   prod_desc_6,
-# MAGIC   prod_desc_7,
-# MAGIC   prod_desc_8,
-# MAGIC   Global_Exclusive_1,
-# MAGIC   Global_Exclusive_2,
-# MAGIC   Global_Exclusive_3,
-# MAGIC   Global_Exclusive_4,
-# MAGIC   Global_Exclusive_5,
-# MAGIC   Global_Exclusive_6,
-# MAGIC   Global_Exclusive_7,
-# MAGIC   Global_Exclusive_8,
-# MAGIC   concat(
-# MAGIC     brand_desc_1,
-# MAGIC     "|",
-# MAGIC     brand_desc_2,
-# MAGIC     "|",
-# MAGIC     brand_desc_3,
-# MAGIC     "|",
-# MAGIC     brand_desc_4,
-# MAGIC     "|",
-# MAGIC       brand_desc_5,
-# MAGIC     "|",
-# MAGIC     brand_desc_6,
-# MAGIC     "|",
-# MAGIC     brand_desc_7,
-# MAGIC     "|",
-# MAGIC     brand_desc_8
-# MAGIC   ) as brand,
-# MAGIC   concat(
-# MAGIC     atg_code_1,
-# MAGIC     "|",
-# MAGIC     atg_code_2,
-# MAGIC     "|",
-# MAGIC     atg_code_3,
-# MAGIC     "|",
-# MAGIC       atg_code_4,
-# MAGIC     "|",
-# MAGIC     atg_code_5,
-# MAGIC     "|",
-# MAGIC     atg_code_6,
-# MAGIC     "|",
-# MAGIC     atg_code_7,
-# MAGIC     "|",
-# MAGIC     atg_code_8
-# MAGIC   ) as atg_code,
-# MAGIC   DATE_ADD(current_date(), 1) as blast_date,
-# MAGIC   m.promotion_edm_flg,
-# MAGIC   m.email,
-# MAGIC   m.card_type,
-# MAGIC group,
-# MAGIC   m.customer_name_shortened_chi,
-# MAGIC   pref_lang AS Language,
-# MAGIC   cust_type,
-# MAGIC   'fprp_notification' as campaign_id 
-# MAGIC FROM
-# MAGIC   recommendations_non_beauty_hk r
-# MAGIC   INNER JOIN customer_list_hk m USING (vip_no)
+
+
+def blast_list_nb_0(region):
+    spark.sql(f"""
+              CREATE
+OR REPLACE TEMPORARY VIEW BlastList_NON_BEAUTY_0_{region} AS
+SELECT
+  r.vip_no,
+  atg_code_1,
+  atg_code_2,
+  atg_code_3,
+  atg_code_4,
+  atg_code_5,
+  atg_code_6,
+   atg_code_7,
+  atg_code_8,
+  brand_desc_1,
+  brand_desc_2,
+  brand_desc_3,
+  brand_desc_4,
+  brand_desc_5,
+  brand_desc_6,
+  brand_desc_7,
+  brand_desc_8,
+  prod_desc_1,
+  prod_desc_2,
+  prod_desc_3,
+  prod_desc_4,
+  prod_desc_5,
+  prod_desc_6,
+  prod_desc_7,
+  prod_desc_8,
+  Global_Exclusive_1,
+  Global_Exclusive_2,
+  Global_Exclusive_3,
+  Global_Exclusive_4,
+  Global_Exclusive_5,
+  Global_Exclusive_6,
+  Global_Exclusive_7,
+  Global_Exclusive_8,
+  concat(
+    brand_desc_1,
+    "|",
+    brand_desc_2,
+    "|",
+    brand_desc_3,
+    "|",
+    brand_desc_4,
+    "|",
+      brand_desc_5,
+    "|",
+    brand_desc_6,
+    "|",
+    brand_desc_7,
+    "|",
+    brand_desc_8
+  ) as brand,
+  concat(
+    atg_code_1,
+    "|",
+    atg_code_2,
+    "|",
+    atg_code_3,
+    "|",
+      atg_code_4,
+    "|",
+    atg_code_5,
+    "|",
+    atg_code_6,
+    "|",
+    atg_code_7,
+    "|",
+    atg_code_8
+  ) as atg_code,
+  DATE_ADD(current_date(), 1) as blast_date,
+  m.promotion_edm_flg,
+  m.email,
+  m.card_type,
+group,
+  m.customer_name_shortened_chi,
+  pref_lang AS Language,
+  cust_type,
+  'fprp_notification' as campaign_id 
+FROM
+  recommendations_non_beauty_{region} r
+  INNER JOIN customer_list_{region} m USING (vip_no)
+              """)
+
+blast_list_nb_0(region="hk")
+blast_list_nb_0(region="cn")
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC CREATE
-# MAGIC OR REPLACE TEMPORARY VIEW BlastList_NON_BEAUTY_cn AS
-# MAGIC SELECT
-# MAGIC   r.vip_no,
-# MAGIC   atg_code_1,
-# MAGIC   atg_code_2,
-# MAGIC   atg_code_3,
-# MAGIC   atg_code_4,
-# MAGIC   atg_code_5,
-# MAGIC   atg_code_6,
-# MAGIC    atg_code_7,
-# MAGIC   atg_code_8,
-# MAGIC   brand_desc_1,
-# MAGIC   brand_desc_2,
-# MAGIC   brand_desc_3,
-# MAGIC   brand_desc_4,
-# MAGIC   brand_desc_5,
-# MAGIC   brand_desc_6,
-# MAGIC   brand_desc_7,
-# MAGIC   brand_desc_8,
-# MAGIC   prod_desc_1,
-# MAGIC   prod_desc_2,
-# MAGIC   prod_desc_3,
-# MAGIC   prod_desc_4,
-# MAGIC   prod_desc_5,
-# MAGIC   prod_desc_6,
-# MAGIC   prod_desc_7,
-# MAGIC   prod_desc_8,
-# MAGIC   Global_Exclusive_1,
-# MAGIC   Global_Exclusive_2,
-# MAGIC   Global_Exclusive_3,
-# MAGIC   Global_Exclusive_4,
-# MAGIC   Global_Exclusive_5,
-# MAGIC   Global_Exclusive_6,
-# MAGIC   Global_Exclusive_7,
-# MAGIC   Global_Exclusive_8,
-# MAGIC   concat(
-# MAGIC     brand_desc_1,
-# MAGIC     "|",
-# MAGIC     brand_desc_2,
-# MAGIC     "|",
-# MAGIC     brand_desc_3,
-# MAGIC     "|",
-# MAGIC     brand_desc_4,
-# MAGIC     "|",
-# MAGIC       brand_desc_5,
-# MAGIC     "|",
-# MAGIC     brand_desc_6,
-# MAGIC     "|",
-# MAGIC     brand_desc_7,
-# MAGIC     "|",
-# MAGIC     brand_desc_8
-# MAGIC   ) as brand,
-# MAGIC   concat(
-# MAGIC     atg_code_1,
-# MAGIC     "|",
-# MAGIC     atg_code_2,
-# MAGIC     "|",
-# MAGIC     atg_code_3,
-# MAGIC     "|",
-# MAGIC       atg_code_4,
-# MAGIC     "|",
-# MAGIC     atg_code_5,
-# MAGIC     "|",
-# MAGIC     atg_code_6,
-# MAGIC     "|",
-# MAGIC     atg_code_7,
-# MAGIC     "|",
-# MAGIC     atg_code_8
-# MAGIC   ) as atg_code,
-# MAGIC   DATE_ADD(current_date(), 1) as blast_date,
-# MAGIC   m.promotion_edm_flg,
-# MAGIC   m.email,
-# MAGIC   m.card_type,
-# MAGIC group,
-# MAGIC   m.customer_name_shortened_chi,
-# MAGIC   pref_lang AS Language,
-# MAGIC   cust_type,
-# MAGIC   'fprp_notification' as campaign_id 
-# MAGIC FROM
-# MAGIC   recommendations_non_beauty_cn r
-# MAGIC   INNER JOIN customer_list_cn m USING (vip_no)
+# add seeding vip_no list
+import pandas as pd
+def add_seeding_vip(region):
+    df = spark.table(f"BlastList_NON_BEAUTY_0_{region}").toPandas()
+    seeding_hk = df.sample(2) 
+    seeding_hk['vip_no']=["testJoyce_gold","testEugene_gold"]
+    seeding_hk['email'] = ["",""] # make email blank
+    blast_list_nb_region=pd.concat([df,seeding_hk])
+    return blast_list_nb_region
 
 # COMMAND ----------
 
-blast_list_nb_hk = spark.table("BlastList_NON_BEAUTY_hk").toPandas()
-blast_list_nb_cn = spark.table("BlastList_NON_BEAUTY_cn").toPandas()
+blast_list_nb_hk =add_seeding_vip("hk")
+blast_list_nb_cn = add_seeding_vip("cn")
 
 # COMMAND ----------
 
@@ -346,15 +279,6 @@ emarsys_columns_nb = [
 
 emarsys_list_1_hk = blast_list_nb_hk.copy().reset_index(drop=True)
 emarsys_list_1_cn = blast_list_nb_cn.copy().reset_index(drop=True)
-
-# COMMAND ----------
-
-# MAGIC %py
-# MAGIC df = spark.createDataFrame(emarsys_list_1_hk)
-# MAGIC df.createOrReplaceTempView("hk_list")
-# MAGIC
-# MAGIC df = spark.createDataFrame(emarsys_list_1_cn)
-# MAGIC df.createOrReplaceTempView("cn_list")
 
 # COMMAND ----------
 
@@ -580,8 +504,8 @@ from(
   )
               """)
 
-product(region= "hk")
-product(region= "cn")
+products(region= "hk")
+products(region= "cn")
 
 # COMMAND ----------
 
