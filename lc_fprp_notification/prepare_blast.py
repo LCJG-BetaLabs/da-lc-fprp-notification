@@ -357,7 +357,7 @@ emarsys_list_1 = blast_list_nb.copy().reset_index(drop=True)
 # MAGIC   brand_desc_en,
 # MAGIC   product_description_en,
 # MAGIC   global_exclusive,
-# MAGIC   product_description_cn,
+# MAGIC   coalesce(product_description_cn,product_description_en) as product_description_cn,
 # MAGIC   brand_description_cn,
 # MAGIC   created_date
 # MAGIC from(
