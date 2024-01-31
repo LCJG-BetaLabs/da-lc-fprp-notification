@@ -3,8 +3,8 @@
 
 # COMMAND ----------
 
-dbutils.widgets.removeAll()
-dbutils.widgets.text("blast_date", "20231017")
+#dbutils.widgets.removeAll()
+#dbutils.widgets.text("blast_date", "20231017")
 dbutils.widgets.text("region", "hk")
 
 blast_date = getArgument("blast_date")
@@ -66,10 +66,10 @@ if region == "hk":
         egc_no
         from
         audience0 a
-        inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_issue_by_quarter b on a.vip_no = b.vip_no
+        inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_summary b on a.vip_no = b.vip_no
         where
-        TO_DATE(issue_date, 'yyyyMMdd') >= '2023-06-01'
-        and a.cust_type in ('Hong Kong', 'Overseas')
+        TO_DATE(collect_start_date, 'yyyyMMdd') >= '2024-02-01'
+        and b.region in ('HKG')
     """)
 elif region == "cn":
     spark.sql(
@@ -81,10 +81,10 @@ elif region == "cn":
         egc_no
         from
         audience0 a
-        inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_issue_by_quarter b on a.vip_no = b.vip_no
+        inner join lc_prd.crm_db_neo_silver.dbo_v_fprp_summary b on a.vip_no = b.vip_no
         where
-        TO_DATE(issue_date, 'yyyyMMdd') >= '2023-06-01'
-        and a.cust_type in ('China')
+        TO_DATE(collect_start_date, 'yyyyMMdd') >= '2024-02-01'
+        and  b.region in ('BJG','SHG','CHD')
         """
     )
 
