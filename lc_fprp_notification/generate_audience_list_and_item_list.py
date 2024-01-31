@@ -3,7 +3,7 @@
 
 # COMMAND ----------
 
-#dbutils.widgets.removeAll()
+dbutils.widgets.removeAll()
 dbutils.widgets.text("blast_date", "20231017")
 dbutils.widgets.text("region", "hk")
 
