@@ -282,6 +282,11 @@ emarsys_list_1_cn = blast_list_nb_cn.copy().reset_index(drop=True)
 
 # COMMAND ----------
 
+spark.createDataFrame(emarsys_list_1_hk).createOrReplaceTempView("hk_list")
+spark.createDataFrame(emarsys_list_1_cn).createOrReplaceTempView("cn_list")
+
+# COMMAND ----------
+
 def product_recommendation(region):
     spark.sql(f"""
 CREATE
@@ -619,5 +624,6 @@ send_email(["arnabmaulik@lcjgroup.com", "cintiaching@lcjgroup.com"], email_subje
 
 # COMMAND ----------
 
-if test:
+if not test:
     spark.table("hk_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_hk"), mode="append")
+    spark.table("cn_list").write.parquet(os.path.join(base_dir.replace("/dbfs", ""), "blast_list_cn"), mode="append")
